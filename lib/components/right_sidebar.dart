@@ -17,7 +17,13 @@ class PropertiesSidebar extends StatelessWidget {
     if (selectedElement == null) {
       return Container(
         width: 300,
-        color: Colors.grey[100],
+        decoration: BoxDecoration(
+          color: Colors.grey[100],
+          border: Border(
+            left: BorderSide(color: Colors.grey[300]!),
+          ),
+        ),
+        
         child: const Center(
           child: Text('Select a field to edit properties'),
         ),
@@ -26,7 +32,7 @@ class PropertiesSidebar extends StatelessWidget {
 
     return Container(
       width: 300,
-      color: Colors.grey[100],
+      color: Colors.white,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -269,42 +275,24 @@ class PropertiesSidebar extends StatelessWidget {
   }
 
   Widget _buildDatePickerProperties() {
-    return Column(
+    return const Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           'Date Picker Properties',
           style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.bold,
           ),
         ),
-        // Add date picker specific properties here if needed
       ],
     );
   }
 
-  // Icon _getIconForType(String type) {
-  //   switch (type) {
-  //     case 'Text Field':
-  //       return const Icon(Icons.text_fields);
-  //     case 'Dropdown':
-  //       return const Icon(Icons.arrow_drop_down_circle);
-  //     case 'Checkbox':
-  //       return const Icon(Icons.check_box);
-  //     case 'Radio Button':
-  //       return const Icon(Icons.radio_button_checked);
-  //     case 'Date Picker':
-  //       return const Icon(Icons.calendar_today);
-  //     default:
-  //       return const Icon(Icons.widgets);
-  //   }
-  // }
-    IconData _getIconForType(String type) {
-    // Changed return type to IconData
+  IconData _getIconForType(String type) {
     switch (type) {
       case 'Text Field':
-        return Icons.text_fields; // Return IconData directly
+        return Icons.text_fields; 
       case 'Dropdown':
         return Icons.arrow_drop_down_circle;
       case 'Checkbox':
