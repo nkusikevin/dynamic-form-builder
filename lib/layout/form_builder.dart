@@ -127,7 +127,7 @@ class _FormElementWidgetState extends State<FormElementWidget> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.all(8.0),
+      elevation: 4,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -166,7 +166,10 @@ class _FormElementWidgetState extends State<FormElementWidget> {
         return TextField(
           decoration: InputDecoration(
             hintText: widget.element.properties['hint'],
-            border: const OutlineInputBorder(),
+            border: const OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.grey),
+
+            ),
           ),
           onChanged: widget.onValueChanged,
         );

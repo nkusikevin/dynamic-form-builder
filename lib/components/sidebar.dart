@@ -7,7 +7,12 @@ class Sidebar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: 250,
-      color: Colors.grey[200],
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border(
+          right: BorderSide(color: Colors.grey[300]!),
+        ),
+      ),
       child: ListView(
         padding: const EdgeInsets.all(8.0),
         children: [

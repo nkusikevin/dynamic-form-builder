@@ -49,6 +49,7 @@ class _FormPreviewPageState extends State<FormPreviewPage> {
               return Padding(
                 padding: const EdgeInsets.only(bottom: 16),
                 child: FormElementWidget(
+                  
                   element: FormElement(
                     type: element['type'],
                     id: element['id'],

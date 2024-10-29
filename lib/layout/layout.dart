@@ -3,6 +3,7 @@ import '../components/sidebar.dart';
 import './form_builder.dart';
 import '../components/right_sidebar.dart';
 import '../models/form_model.dart';
+import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 
 class Layout extends StatefulWidget {
   final SavedForm form;
@@ -20,16 +21,15 @@ class _LayoutState extends State<Layout> {
   late FormBuilderState formState;
   String? selectedElementId;
 
-@override
+  @override
   void initState() {
     super.initState();
     formState = FormBuilderState();
     _loadFormElements();
   }
 
-void _loadFormElements() {
+  void _loadFormElements() {
     formState.elements = widget.form.elements.map((elementMap) {
-      // Cast the properties map correctly
       Map<String, dynamic> properties = {};
       if (elementMap['properties'] != null) {
         properties = Map<String, dynamic>.from(elementMap['properties'] as Map);
@@ -52,8 +52,7 @@ void _loadFormElements() {
     );
   }
 
- void _saveForm() {
-    // Convert FormElements back to Map format for storage
+  void _saveForm() {
     widget.form.elements = formState.elements
         .map((element) => {
               'type': element.type,
@@ -101,72 +100,138 @@ void _loadFormElements() {
                     children: [
                       _buildToolbar(),
                       Expanded(
-                        child: ReorderableListView(
-                          onReorder: formState.reorderElements,
+                        child: DragAndDropLists(
                           children: [
-                            if (formState.elements.isEmpty)
-                              Container(
-                                key: const Key('empty'),
-                                height: 200,
-                                child: const Center(
-                                  child: Text(
-                                    'Drop form elements here',
-                                    style: TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: 18,
+                            DragAndDropList(
+                              canDrag: false,
+                              header: formState.elements.isEmpty
+                                  ? Container(
+                                      height: 200,
+                                      child: const Center(
+                                        child: Text(
+                                          'Drop form elements here',
+                                          style: TextStyle(
+                                            color: Colors.grey,
+                                            fontSize: 18,
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  : null,
+                                  children: List.generate(
+                                formState.elements.length,
+                                (index) {
+                                  final element = formState.elements[index];
+                                  return DragAndDropItem(
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          selectedElementId = element.id;
+                                        });
+                                      },
+                                      child: Container(
+                                        margin: const EdgeInsets.symmetric(
+                                          vertical: 4,
+                                          horizontal: 10,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          border:
+                                              element.id == selectedElementId
+                                                  ? Border.all(
+                                                      color: Colors.blue,
+                                                      width: 1,
+                                                    )
+                                                  : null,
+                                          borderRadius:
+                                              BorderRadius.circular(8.0),
+                                        ),
+                                        child: FormElementWidget(
+                                          
+                                          key: ValueKey(element.id),
+                                          element: element,
+                                          onDelete: () {
+                                            setState(() {
+                                              if (selectedElementId ==
+                                                  element.id) {
+                                                selectedElementId = null;
+                                              }
+                                              formState
+                                                  .removeElement(element.id);
+                                            });
+                                          },
+                                          onValueChanged: (value) {
+                                            setState(() {
+                                              formState.updateElementValue(
+                                                element.id,
+                                                value,
+                                              );
+                                            });
+                                          },
+                                        ),
+                                      ),
                                     ),
-                                  ),
+                                  );
+                                },
+                              ),
+                            ),
+                          ],
+                          
+                          onItemReorder: (int oldItemIndex, int oldListIndex,
+                              int newItemIndex, int newListIndex) {
+                            setState(() {
+                              formState.reorderElements(
+                                  oldItemIndex, newItemIndex);
+                            });
+                          },
+                          onListReorder:
+                              (_, __) {}, // Not needed for single list
+                          listPadding: const EdgeInsets.symmetric(
+                            horizontal: 15,
+                            vertical: 10,
+                          ),
+                          itemDivider: const Divider(
+                            thickness: 2,
+                            height: 2,
+                            color: Colors.transparent,
+                          ),
+                          itemDecorationWhileDragging: BoxDecoration(
+                            color: Colors.white,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.5),
+                                spreadRadius: 2,
+                                blurRadius: 3,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          listInnerDecoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.5),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          lastItemTargetHeight: 8,
+                          addLastItemTargetHeightToTop: true,
+                          contentsWhenEmpty: Container(
+                            padding: const EdgeInsets.all(20),
+                            child: const Center(
+                              child: Text(
+                                'Drop elements here to build your form',
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 18,
                                 ),
                               ),
-                            ...formState.elements.map((element) {
-                              return GestureDetector(
-                                key: Key(element.id),
-                                onTap: () {
-                                  setState(() {
-                                    selectedElementId = element.id;
-                                  });
-                                },
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    border: element.id == selectedElementId
-                                        ? Border.all(
-                                            color: Colors.blue,
-                                            width: 2,
-                                          )
-                                        : null,
-                                  ),
-                                  child: FormElementWidget(
-                                    element: element,
-                                    onDelete: () {
-                                      setState(() {
-                                        if (selectedElementId == element.id) {
-                                          selectedElementId = null;
-                                        }
-                                        formState.removeElement(element.id);
-                                      });
-                                    },
-                                    onValueChanged: (value) {
-                                      setState(() {
-                                        formState.updateElementValue(
-                                          element.id,
-                                          value,
-                                        );
-                                      });
-                                    },
-                                  ),
-                                ),
-                              );
-                            }).toList(),
-                          ],
+                            ),
+                          ),
                         ),
                       ),
                     ],
                   ),
                 );
               },
-              onAccept: (data) {
+              onAcceptWithDetails: (DragTargetDetails<String> data) {
                 setState(() {
-                  formState.addElement(data);
+                  formState.addElement(data.data);
                 });
               },
             ),
