@@ -1,6 +1,7 @@
 // form_builder.dart
 import 'package:flutter/material.dart';
 
+// form_builder.dart
 class FormElement {
   final String type;
   final String id;
@@ -14,8 +15,25 @@ class FormElement {
     this.value,
   });
 
-  // Helper method to get label or default to field type
-  String get label => properties['label'] ?? type;
+  // Add constructor from Map
+  factory FormElement.fromMap(Map<String, dynamic> map) {
+    return FormElement(
+      type: map['type'] as String,
+      id: map['id'] as String,
+      properties: (map['properties'] as Map<String, dynamic>?) ?? {},
+      value: map['value'],
+    );
+  }
+
+  // Add method to convert to Map
+  Map<String, dynamic> toMap() {
+    return {
+      'type': type,
+      'id': id,
+      'properties': properties,
+      'value': value,
+    };
+  }
 }
 
 class FormBuilderState extends ChangeNotifier {
@@ -120,7 +138,7 @@ class _FormElementWidgetState extends State<FormElementWidget> {
                 _getIconForType(widget.element.type),
                 const SizedBox(width: 8),
                 Text(
-                  widget.element.label,
+                  widget.element.properties['label'] as String,
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
@@ -171,7 +189,7 @@ class _FormElementWidgetState extends State<FormElementWidget> {
 
       case 'Checkbox':
         return CheckboxListTile(
-          title: Text(widget.element.label),
+          title: Text(widget.element.properties['label'] as String),
           value: widget.element.value ?? false,
           onChanged: (value) => widget.onValueChanged(value),
           contentPadding: EdgeInsets.zero,

@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
+// import 'app.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'models/form_model.dart';
 import 'app.dart';
 
-void main() {
+void main() async {
+  await Hive.initFlutter();
+  Hive.registerAdapter(SavedFormAdapter());
+  await Hive.openBox<SavedForm>('forms');
+
   runApp(const MyApp());
 }
 
@@ -23,7 +30,7 @@ class MyApp extends StatelessWidget {
         ),
       ),
       debugShowCheckedModeBanner: false,
-      home: const MyHomePage(title: 'Form Builder'),
+      home: const MyHomePage(),
     );
   }
 }

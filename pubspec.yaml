@@ -13,6 +13,8 @@ dependencies:
   drag_and_drop_lists: ^0.4.1
   json_dynamic_widget: ^7.3.1+4
   provider: ^6.1.2
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
 
   cupertino_icons: ^1.0.8
 
@@ -21,6 +23,7 @@ dev_dependencies:
     sdk: flutter
 
   flutter_lints: ^4.0.0
-
+  hive_generator: ^2.0.1
+  build_runner: ^2.4.11
 flutter:
   uses-material-design: true
