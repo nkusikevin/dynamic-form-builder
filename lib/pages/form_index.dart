@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import '../models/form_model.dart';
 import './form_preview_page.dart';
-import '../layout/layout.dart';  
-
+import '../layout/layout.dart';
 
 class FormIndexPage extends StatefulWidget {
   const FormIndexPage({super.key});
@@ -26,9 +25,12 @@ class _FormIndexPageState extends State<FormIndexPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Forms' , style: TextStyle(
-          color: Colors.white,
-        ),),
+        title: const Text(
+          'My Forms',
+          style: TextStyle(
+            color: Colors.white,
+          ),
+        ),
         backgroundColor: Colors.blue.shade400,
         actions: [
           IconButton(
@@ -76,7 +78,19 @@ class _FormIndexPageState extends State<FormIndexPage> {
   }
 
   Widget _buildFormCard(BuildContext context, SavedForm form) {
-    return Card(
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey[200]!,
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
+        border: Border.all(color: Colors.blue[600]!),
+      ),
       margin: const EdgeInsets.only(bottom: 16),
       child: InkWell(
         onTap: () => _showFormActions(context, form),
@@ -93,6 +107,7 @@ class _FormIndexPageState extends State<FormIndexPage> {
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
+                        letterSpacing: 0.5,
                       ),
                     ),
                   ),
@@ -241,7 +256,6 @@ class _FormIndexPageState extends State<FormIndexPage> {
       await formsBox.add(newForm);
 
       if (mounted) {
-        print('newForm: $newForm');
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -253,7 +267,6 @@ class _FormIndexPageState extends State<FormIndexPage> {
   }
 
   void _editForm(BuildContext context, SavedForm form) {
-    print('editForm: $form');
     Navigator.push(
       context,
       MaterialPageRoute(
